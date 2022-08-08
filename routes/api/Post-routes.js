@@ -73,7 +73,7 @@ router.post('/', (req, res) => {
       console.log(err);
       res.status(500).json(err);
     });
-});
+}); 
 //PUT route for voting on posts
 // PUT /api/posts/upvote
 router.put('/upvote', (req, res) => {
