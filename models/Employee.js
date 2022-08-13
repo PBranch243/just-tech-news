@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const sequelize = require('../config/connection');
 
 // create our User model
-class User extends Model {
+class Employee extends Model {
   // set up method to run on instance data (per user) to check password
   checkPassword(loginPw) {
     return bcrypt.compareSync(loginPw, this.password);
@@ -11,7 +11,7 @@ class User extends Model {
 }
 
 // create fields/columns for User model
-User.init(
+Employee.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -21,7 +21,8 @@ User.init(
     },
     username: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     email: {
       type: DataTypes.STRING,
@@ -38,26 +39,27 @@ User.init(
         len: [4]
       }
     }
+// notincluding phone number for now
   },
   {
     hooks: {
       // set up beforeCreate lifecycle "hook" functionality
-      async beforeCreate(newUserData) {
-        newUserData.password = await bcrypt.hash(newUserData.password, 10);
-        return newUserData;
+      async beforeCreate(newEmployeeData) {
+        newUserData.password = await bcrypt.hash(newEmployeeData.password, 10);
+        return newEmployeeData;
       },
 
-      async beforeUpdate(updatedUserData) {
-        updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
-        return updatedUserData;
+      async beforeUpdate(updatedEmployeeData) {
+        updatedEmployeeData.password = await bcrypt.hash(updatedEmployeeData.password, 10);
+        return updatedEmployeeData;
       }
     },
     sequelize,
     timestamps: false,
     freezeTableName: true,
     underscored: true,
-    modelName: 'user'
+    modelName: 'employee'
   }
 );
 
-module.exports = User;
+module.exports = Employee;
